@@ -24,4 +24,4 @@ npm run test
 ```
 npm run lint
 ```
-See [Demo](https://drozdmargo.github.io/vue-order-app/).
+See [Demo](https://drozdmargo.github.io/vehicle-order-app/).
