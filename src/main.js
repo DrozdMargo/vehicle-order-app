@@ -10,7 +10,7 @@ Vue.use(Vuex)
 const storeConfig = {
   modules: {
     vehicles: Vehicles
-  },
+  }
 }
 const store = new Vuex.Store(storeConfig)
 

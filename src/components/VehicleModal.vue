@@ -82,120 +82,119 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
-  export default {
-    props: {
-      filter: Array
+export default {
+  props: {
+    filter: Array
+  },
+  data () {
+    return {
+      dialog: false,
+      selectedTypes: [],
+      selectedModels: [],
+      selectedVehicles: [],
+      hideNotSelected: false
+    }
+  },
+  computed: {
+    ...mapGetters('vehicles', ['composedVehicles']),
+    filteredTypes () {
+      const filteredTypes = []
+      this.filter.forEach((item) => {
+        if (item.vehicleTypeId) {
+          filteredTypes.push(item.vehicleTypeId)
+        }
+      })
+      return filteredTypes
     },
-    data() {
-      return {
-        dialog: false,
-        selectedTypes: [],
-        selectedModels: [],
-        selectedVehicles: [],
-        hideNotSelected: false
-      }
+    filteredModels () {
+      const filteredModels = []
+      this.filter.forEach((item) => {
+        if (item.vehicleModelId) {
+          filteredModels.push(item.vehicleModelId)
+        }
+      })
+      return filteredModels
     },
-    computed: {
-      ...mapGetters('vehicles', ['composedVehicles']),
-      filteredTypes() {
-        const filteredTypes = []
-        this.filter.forEach((item) => {
-          if (item.vehicleTypeId) {
-            filteredTypes.push(item.vehicleTypeId)
+    filteredVehicles () {
+      const filteredVehicles = []
+      this.filter.forEach((item) => {
+        if (item.vehicleId) {
+          filteredVehicles.push(item.vehicleId)
+        }
+      })
+      return filteredVehicles
+    },
+    availableVehicles () {
+      return this.composedVehicles
+    }
+  },
+  methods: {
+    save () {
+      this.dialog = false
+      const selectedVehicles = []
+      this.selectedTypes.forEach((id) => {
+        selectedVehicles.push({ vehicleTypeId: id })
+      })
+      this.selectedModels.forEach((id) => {
+        selectedVehicles.push({ vehicleModelId: id })
+      })
+      this.selectedVehicles.forEach((id) => {
+        selectedVehicles.push({ vehicleId: id })
+      })
+      console.log(selectedVehicles)
+      this.$emit('select', this.selectedVehicles)
+    }
+  },
+  watch: {
+    hideNotSelected () {
+      if (this.hideNotSelected) {
+        this.availableVehicles.forEach((type) => {
+          if (!this.selectedTypes.includes(type.id)) {
+            if (this.$refs['type' + type.id]) {
+              this.$refs['type' + type.id][0].$el.style.display = 'none'
+            }
           }
-        })
-        return filteredTypes
-      },
-      filteredModels() {
-        const filteredModels = []
-        this.filter.forEach((item) => {
-          if (item.vehicleModelId) {
-            filteredModels.push(item.vehicleModelId)
-          }
-        })
-        return filteredModels
-      },
-      filteredVehicles() {
-        const filteredVehicles = []
-        this.filter.forEach((item) => {
-          if (item.vehicleId) {
-            filteredVehicles.push(item.vehicleId)
-          }
-        })
-        return filteredVehicles
-      },
-      availableVehicles() {
-        return this.composedVehicles
-      }
-    },
-    methods: {
-      save() {
-        this.dialog = false;
-        const selectedVehicles = [];
-        this.selectedTypes.forEach((id) => {
-          selectedVehicles.push({vehicleTypeId: id});
-        });
-        this.selectedModels.forEach((id) => {
-          selectedVehicles.push({vehicleModelId: id});
-        });
-        this.selectedVehicles.forEach((id) => {
-          selectedVehicles.push({vehicleId: id});
-        });
-        console.log(selectedVehicles);
-        this.$emit('select', this.selectedVehicles)
-      }
-    },
-    watch: {
-      hideNotSelected() {
-        if (this.hideNotSelected) {
-          this.availableVehicles.forEach((type) => {
-            if (!this.selectedTypes.includes(type.id)) {
-              if (this.$refs['type' + type.id]) {
-                this.$refs['type' + type.id][0].$el.style.display = 'none';
+          type.models.forEach((model) => {
+            if (!this.selectedModels.includes(model.id)) {
+              if (this.$refs['model' + model.id]) {
+                this.$refs['model' + model.id][0].$el.style.display = 'none'
               }
             }
-            type.models.forEach((model) => {
-              if (!this.selectedModels.includes(model.id)) {
-                if (this.$refs['model' + model.id]) {
-                  this.$refs['model' + model.id][0].$el.style.display = 'none';
+            model.vehicles.forEach((vehicle) => {
+              if (!this.selectedVehicles.includes(vehicle.id)) {
+                if (this.$refs['vehicle' + vehicle.id]) {
+                  this.$refs['vehicle' + vehicle.id][0].$el.style.display = 'none'
                 }
               }
-              model.vehicles.forEach((vehicle) => {
-                if (!this.selectedVehicles.includes(vehicle.id)) {
-                  if (this.$refs['vehicle' + vehicle.id]) {
-                    this.$refs['vehicle' + vehicle.id][0].$el.style.display = 'none';
-                  }
-                }
-              });
-            });
-          });
-        } else {
-          this.availableVehicles.forEach((type) => {
-            if (!this.selectedTypes.includes(type.id)) {
-              if (this.$refs['type' + type.id]) {
-                this.$refs['type' + type.id][0].$el.style.display = 'block';
-              }
-            }
-            type.models.forEach((model) => {
-              if (!this.selectedModels.includes(model.id)) {
-                if (this.$refs['model' + model.id]) {
-                  this.$refs['model' + model.id][0].$el.style.display = 'block';
-                }
-              }
-              model.vehicles.forEach((vehicle) => {
-                if (!this.selectedVehicles.includes(vehicle.id)) {
-                  if (this.$refs['vehicle' + vehicle.id]) {
-                    this.$refs['vehicle' + vehicle.id][0].$el.style.display = 'block';
-                  }
-                }
-              })
             })
           })
-        }
+        })
+      } else {
+        this.availableVehicles.forEach((type) => {
+          if (!this.selectedTypes.includes(type.id)) {
+            if (this.$refs['type' + type.id]) {
+              this.$refs['type' + type.id][0].$el.style.display = 'block'
+            }
+          }
+          type.models.forEach((model) => {
+            if (!this.selectedModels.includes(model.id)) {
+              if (this.$refs['model' + model.id]) {
+                this.$refs['model' + model.id][0].$el.style.display = 'block'
+              }
+            }
+            model.vehicles.forEach((vehicle) => {
+              if (!this.selectedVehicles.includes(vehicle.id)) {
+                if (this.$refs['vehicle' + vehicle.id]) {
+                  this.$refs['vehicle' + vehicle.id][0].$el.style.display = 'block'
+                }
+              }
+            })
+          })
+        })
       }
     }
   }
+}
 </script>
-

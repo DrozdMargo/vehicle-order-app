@@ -49,39 +49,39 @@
 </template>
 
 <script>
-  import VehicleModal from './components/VehicleModal';
-  import {mapState} from 'vuex'
+import VehicleModal from './components/VehicleModal'
+import { mapState } from 'vuex'
 
-  export default {
-    name: 'App',
-    components: {
-      VehicleModal
-    },
-    data() {
-      return {
-        selectedVehicles: [],
-        filter: [
-          {vehicleTypeId: 1},
-          {vehicleTypeId: 2},
-          {vehicleModelId: 1},
-          {vehicleModelId: 2},
-          {vehicleId: 1},
-          {vehicleId: 2}
-        ]
-      }
-    },
-    computed: {
-      ...mapState('vehicles', ['vehicles'])
-    },
-    created() {
-      this.$store.dispatch('vehicles/fetchVehicleTypes');
-      this.$store.dispatch('vehicles/fetchVehicleModels');
-      this.$store.dispatch('vehicles/fetchVehicleList');
-    },
-    methods: {
-      getSelectedVehicles(data) {
-        this.selectedVehicles = this.vehicles.filter(vehicle => data.includes(vehicle.id))
-      }
+export default {
+  name: 'App',
+  components: {
+    VehicleModal
+  },
+  data () {
+    return {
+      selectedVehicles: [],
+      filter: [
+        { vehicleTypeId: 1 },
+        { vehicleTypeId: 2 },
+        { vehicleModelId: 1 },
+        { vehicleModelId: 2 },
+        { vehicleId: 1 },
+        { vehicleId: 2 }
+      ]
+    }
+  },
+  computed: {
+    ...mapState('vehicles', ['vehicles'])
+  },
+  created () {
+    this.$store.dispatch('vehicles/fetchVehicleTypes')
+    this.$store.dispatch('vehicles/fetchVehicleModels')
+    this.$store.dispatch('vehicles/fetchVehicleList')
+  },
+  methods: {
+    getSelectedVehicles (data) {
+      this.selectedVehicles = this.vehicles.filter(vehicle => data.includes(vehicle.id))
     }
   }
+}
 </script>

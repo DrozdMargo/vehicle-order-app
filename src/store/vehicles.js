@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   namespaced: true,
@@ -8,44 +8,44 @@ export default {
     models: []
   },
   mutations: {
-    setVehicles(state, data) {
+    setVehicles (state, data) {
       state.vehicles = data
     },
-    setTypes(state, data) {
+    setTypes (state, data) {
       state.types = data
     },
-    setModels(state, data) {
+    setModels (state, data) {
       state.models = data
-    },
+    }
   },
   actions: {
-    async fetchVehicleTypes(state) {
+    async fetchVehicleTypes (state) {
       try {
         const response = await axios.get('https://api.myjson.com/bins/7y3fr')
         state.commit('setTypes', response.data)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
-    async fetchVehicleModels(state) {
+    async fetchVehicleModels (state) {
       try {
         const response = await axios.get('https://api.myjson.com/bins/170i8s')
         state.commit('setModels', response.data)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
-    async fetchVehicleList(state) {
+    async fetchVehicleList (state) {
       try {
         const response = await axios.get('https://api.myjson.com/bins/1h4vj0')
         state.commit('setVehicles', response.data)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
-    },
+    }
   },
   getters: {
-    composedVehicles(state) {
+    composedVehicles (state) {
       const types = state.types.slice()
       const models = state.models.slice()
       const vehicles = state.vehicles.slice()
