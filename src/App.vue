@@ -1,28 +1,87 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-toolbar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span>Vehicle App</span>
+      </v-toolbar-title>
+    </v-toolbar>
+
+    <v-content>
+      <VehicleModal :filter="filter"
+                    @select="getSelectedVehicles"/>
+      <v-layout row>
+        <v-flex xs4></v-flex>
+        <v-flex xs4>
+          <v-card v-if="selectedVehicles.length">
+            <v-list two-line>
+              <template v-for="vehicle in selectedVehicles">
+                <v-subheader
+                    v-if="vehicle.name"
+                    :key="vehicle.name"
+                >
+                  {{vehicle.name}}
+                </v-subheader>
+
+                <v-divider
+                ></v-divider>
+
+                <v-list-tile
+                    :key="vehicle.id"
+                    avatar
+                >
+                  <v-list-tile-avatar>
+                    <img :src="vehicle.image">
+                  </v-list-tile-avatar>
+
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="vehicle.name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="vehicle.name"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </template>
+            </v-list>
+
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+  import VehicleModal from './components/VehicleModal';
+  import {mapState} from 'vuex'
 
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  export default {
+    name: 'App',
+    components: {
+      VehicleModal
+    },
+    data() {
+      return {
+        selectedVehicles: [],
+        filter: [
+          {vehicleTypeId: 1},
+          {vehicleTypeId: 2},
+          {vehicleModelId: 1},
+          {vehicleModelId: 2},
+          {vehicleId: 1},
+          {vehicleId: 2}
+        ]
+      }
+    },
+    computed: {
+      ...mapState('vehicles', ['vehicles'])
+    },
+    created() {
+      this.$store.dispatch('vehicles/fetchVehicleTypes');
+      this.$store.dispatch('vehicles/fetchVehicleModels');
+      this.$store.dispatch('vehicles/fetchVehicleList');
+    },
+    methods: {
+      getSelectedVehicles(data) {
+        this.selectedVehicles = this.vehicles.filter(vehicle => data.includes(vehicle.id))
+      }
+    }
   }
-}
 </script>
-
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
